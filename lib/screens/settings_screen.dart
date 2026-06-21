@@ -1,6 +1,7 @@
 // lib/screens/settings_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../app_theme.dart';
 import '../providers/app_provider.dart';
 import '../widgets/parental_gate.dart';
@@ -136,6 +137,62 @@ class SettingsScreen extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
+                  // ── User Profile Section ──────────────────────────
+                  _sectionHeader('Profile'),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    child: ListTile(
+                      leading: const Icon(Icons.switch_account_rounded, color: Colors.deepPurple),
+                      title: const Text('Switch User Type',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: const Text('Change between Child and Adult mode'),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        if (!context.mounted) return;
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            title: const Text('Who is using the app?'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  leading: const Icon(Icons.child_care, color: AppTheme.primaryGreen),
+                                  title: const Text('Child'),
+                                  onTap: () async {
+                                    await prefs.setBool('is_child_user', true);
+                                    if (!ctx.mounted) return;
+                                    Navigator.pop(ctx);
+                                    ScaffoldMessenger.of(ctx).showSnackBar(
+                                      const SnackBar(content: Text('Switched to Child mode')),
+                                    );
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.person, color: AppTheme.deepTeal),
+                                  title: const Text('Parent / Adult'),
+                                  onTap: () async {
+                                    await prefs.setBool('is_child_user', false);
+                                    if (!ctx.mounted) return;
+                                    Navigator.pop(ctx);
+                                    ScaffoldMessenger.of(ctx).showSnackBar(
+                                      const SnackBar(content: Text('Switched to Adult mode')),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
                   // ── About Section ─────────────────────────────────
                   _sectionHeader('About'),
                   Card(
@@ -147,15 +204,15 @@ class SettingsScreen extends StatelessWidget {
                           leading: Icon(Icons.info_outline, color: Colors.teal),
                           title: Text('Version',
                               style: TextStyle(fontWeight: FontWeight.bold)),
-                          trailing: Text('1.0.0',
+                          trailing: Text('2.0.0',
                               style: TextStyle(color: Colors.grey)),
                         ),
                         const Divider(height: 1),
-                        const ListTile(
-                          leading: Icon(Icons.child_care, color: Colors.pink),
+                              const ListTile(
+                          leading: Icon(Icons.family_restroom, color: Colors.pink),
                           title: Text('Designed for',
                               style: TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text('Muslim children aged 4 and above'),
+                          subtitle: Text('Muslim families — children & adults'),
                         ),
                         const Divider(height: 1),
                         ListTile(

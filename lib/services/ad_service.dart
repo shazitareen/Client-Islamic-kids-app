@@ -2,55 +2,59 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-/// Manages AdMob Ads.
-/// Uses production ad unit IDs with test device registration for safe testing.
 class AdService {
-  // ── AdMob IDs ──────────────────────────────────────────────────
   static const String _adMobInterstitialId = 'ca-app-pub-3461798675611787/6870862384';
 
   InterstitialAd? _adMobInterstitialAd;
   bool _isAdMobLoaded = false;
   bool _adsDisabled = false;
 
-  /// Initializes the ad service
-  Future<void> initialize() async {
-    final RequestConfiguration requestConfiguration = RequestConfiguration(
-      tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-      tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-      maxAdContentRating: MaxAdContentRating.g,
+  // true = child-safe config (TFCD on); false = standard adult config
+  bool _isChildUser = true;
+
+  Future<void> initialize({bool isChildUser = true}) async {
+    _isChildUser = isChildUser;
+    final RequestConfiguration config = RequestConfiguration(
+      tagForChildDirectedTreatment: isChildUser
+          ? TagForChildDirectedTreatment.yes
+          : TagForChildDirectedTreatment.no,
+      tagForUnderAgeOfConsent: isChildUser
+          ? TagForUnderAgeOfConsent.yes
+          : TagForUnderAgeOfConsent.no,
+      maxAdContentRating:
+          isChildUser ? MaxAdContentRating.g : MaxAdContentRating.t,
     );
-    await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
-    debugPrint('AdMob kids policy configuration initialized: TFCD=yes, MaxRating=G');
+    await MobileAds.instance.updateRequestConfiguration(config);
+    debugPrint(
+        'AdMob configured: isChild=$isChildUser TFCD=${isChildUser ? "yes" : "no"}');
   }
 
-  /// Call this once ads are purchased to stop showing them.
   void disableAds() {
     _adsDisabled = true;
     _adMobInterstitialAd?.dispose();
     _adMobInterstitialAd = null;
   }
 
-  // ── AdMob Interstitial ──────────────────────────────────────────
-  /// Pre-loads an AdMob interstitial ad.
   Future<void> loadAdMobInterstitial() async {
     if (_adsDisabled) return;
 
     try {
       await InterstitialAd.load(
         adUnitId: _adMobInterstitialId,
-        request: const AdRequest(),
+        request: AdRequest(
+          // Pass child-directed extras when in child mode
+          extras: _isChildUser ? {'npa': '1'} : null,
+        ),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (ad) {
             _adMobInterstitialAd = ad;
             _isAdMobLoaded = true;
-            debugPrint('AdMob Interstitial loaded');
-
             ad.fullScreenContentCallback = FullScreenContentCallback(
               onAdDismissedFullScreenContent: (ad) {
                 ad.dispose();
                 _adMobInterstitialAd = null;
                 _isAdMobLoaded = false;
-                loadAdMobInterstitial(); // Pre-load next
+                loadAdMobInterstitial();
               },
               onAdFailedToShowFullScreenContent: (ad, error) {
                 ad.dispose();
@@ -72,18 +76,15 @@ class AdService {
     }
   }
 
-  /// Shows the AdMob interstitial ad (used in Qaidah Quiz and Islamic Quiz)
   Future<void> showAdMobInterstitial() async {
     if (_adsDisabled) return;
     if (!_isAdMobLoaded || _adMobInterstitialAd == null) {
-      debugPrint('AdMob not ready — loading fresh one');
       await loadAdMobInterstitial();
       return;
     }
     await _adMobInterstitialAd!.show();
   }
 
-  /// Clean up resources
   void dispose() {
     _adMobInterstitialAd?.dispose();
   }

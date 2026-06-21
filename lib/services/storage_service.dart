@@ -12,6 +12,8 @@ class StorageService {
   static const String _quizHighScoreKey = 'quiz_high_score';
   static const String _notificationHourKey = 'notification_hour';
   static const String _notificationMinuteKey = 'notification_minute';
+  static const String _ageGateSeenKey = 'age_gate_seen';
+  static const String _isChildUserKey = 'is_child_user';
 
   final SharedPreferences _prefs;
 
@@ -118,6 +120,17 @@ class StorageService {
       await _prefs.setInt(_quizHighScoreKey, score);
     }
   }
+
+  // ─── Age Gate ─────────────────────────────────────────────────────
+
+  bool hasSeenAgeGate() => _prefs.getBool(_ageGateSeenKey) ?? false;
+
+  Future<void> setAgeGateSeen(bool isChild) async {
+    await _prefs.setBool(_ageGateSeenKey, true);
+    await _prefs.setBool(_isChildUserKey, isChild);
+  }
+
+  bool isChildUser() => _prefs.getBool(_isChildUserKey) ?? true;
 
   // ─── Notifications ────────────────────────────────────────────────
 

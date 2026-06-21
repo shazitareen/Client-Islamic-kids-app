@@ -14,76 +14,81 @@ import 'services/notification_service.dart';
 import 'services/purchase_service.dart';
 import 'services/storage_service.dart';
 import 'screens/home_screen.dart';
+import 'screens/age_gate_screen.dart';
 
-/// Entry point — initialises all services before running the app.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Lock to portrait mode (better for kids)
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Initialise AdMob SDK in background
   MobileAds.instance.initialize();
 
-  // Initialise storage (this is fast, safe to await)
   final storageService = await StorageService.create();
 
-  // Wire up services
+  // Determine user type before initialising ads so config is correct from the start
+  final isChildUser = storageService.isChildUser();
+
   final adService = AdService();
-  await adService.initialize();
+  await adService.initialize(isChildUser: isChildUser);
+
   final purchaseService = PurchaseService(storageService);
   final notificationService = NotificationService();
 
-  // Create AppProvider and initialise everything
   final appProvider = AppProvider(
     adService: adService,
     purchaseService: purchaseService,
     notificationService: notificationService,
     storageService: storageService,
   );
-  
-  // Fire and forget: do not await so it doesn't block runApp
   appProvider.initialize();
+
+  // Show age gate on very first launch; route directly to home otherwise
+  final showAgeGate = !storageService.hasSeenAgeGate();
 
   runApp(
     MultiProvider(
       providers: [
-        // App-wide provider (ads, purchases, notifications)
         ChangeNotifierProvider<AppProvider>.value(value: appProvider),
-
-        // Qaidah Quiz provider — gets adService injected
         ChangeNotifierProvider<QaidahProvider>(
           create: (_) => QaidahProvider(adService),
         ),
-
-        // Islamic Quiz provider
         ChangeNotifierProvider<QuizProvider>(
           create: (_) => QuizProvider(storageService, adService),
         ),
-
-        // Daily Tasks provider
         ChangeNotifierProvider<TasksProvider>(
           create: (_) => TasksProvider(storageService),
         ),
       ],
-      child: const IslamicKidsApp(),
+      child: Deen4FamilyApp(
+        showAgeGate: showAgeGate,
+        storageService: storageService,
+      ),
     ),
   );
 }
 
-class IslamicKidsApp extends StatelessWidget {
-  const IslamicKidsApp({super.key});
+class Deen4FamilyApp extends StatelessWidget {
+  final bool showAgeGate;
+  final StorageService storageService;
+
+  const Deen4FamilyApp({
+    super.key,
+    required this.showAgeGate,
+    required this.storageService,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'deen4kids',
+      title: 'Deen4Family',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
-      home: const HomeScreen(),
+      home: showAgeGate
+          ? AgeGateScreen(storageService: storageService)
+          : const HomeScreen(),
     );
   }
 }
