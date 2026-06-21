@@ -1,4 +1,4 @@
-package com.cilatrix.deen4kids
+package com.cilatrix.deen4family
 
 import io.flutter.embedding.android.FlutterActivity
 
