@@ -3,7 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdService {
-  static const String _adMobInterstitialId = 'ca-app-pub-3461798675611787/6870862384';
+  // Google's official test interstitial ID — only used in debug builds
+  static const String _testInterstitialId = 'ca-app-pub-3940256099942544/1033173712';
+  static const String _prodInterstitialId = 'ca-app-pub-3461798675611787/6870862384';
+
+  static String get _adMobInterstitialId =>
+      kDebugMode ? _testInterstitialId : _prodInterstitialId;
 
   InterstitialAd? _adMobInterstitialAd;
   bool _isAdMobLoaded = false;

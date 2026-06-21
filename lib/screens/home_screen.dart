@@ -186,7 +186,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             // Quran Card
                             ModuleCard(
                               title: 'The Holy Quran',
-                              iconPath: 'assets/images/qaidah-quiz.png',
+                              iconPath: '',
+                              emoji: '📖',
                               gradient: const [Color(0xFF1B5E20), Color(0xFF388E3C)],
                               onTap: () => Navigator.push(
                                 context,
@@ -241,7 +242,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             // Wudu Guide Card
                             ModuleCard(
                               title: 'How to Make Wudu',
-                              iconPath: 'assets/images/how-to-pray.png',
+                              iconPath: '',
+                              emoji: '🤲',
                               gradient: const [Color(0xFF0097A7), Color(0xFF26C6DA)],
                               onTap: () => Navigator.push(
                                 context,

@@ -8,6 +8,8 @@ class ModuleCard extends StatefulWidget {
   final String iconPath;
   final List<Color> gradient;
   final VoidCallback onTap;
+  /// Optional emoji shown instead of the image asset (use while awaiting a proper icon)
+  final String? emoji;
 
   const ModuleCard({
     super.key,
@@ -15,6 +17,7 @@ class ModuleCard extends StatefulWidget {
     required this.iconPath,
     required this.gradient,
     required this.onTap,
+    this.emoji,
   });
 
 
@@ -93,18 +96,25 @@ class _ModuleCardState extends State<ModuleCard> {
                           ),
                         ],
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(35),
-                        child: Image.asset(
-                          widget.iconPath,
-                          height: 70,
-                          width: 70,
-                          fit: BoxFit.cover, // Use cover to fill the circle
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.image_not_supported_rounded,
-                                  size: 40, color: Colors.black26),
-                        ),
-                      ),
+                      child: widget.emoji != null
+                          ? Center(
+                              child: Text(
+                                widget.emoji!,
+                                style: const TextStyle(fontSize: 38),
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(35),
+                              child: Image.asset(
+                                widget.iconPath,
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.image_not_supported_rounded,
+                                        size: 40, color: Colors.black26),
+                              ),
+                            ),
                     ),
                     const SizedBox(width: 16),
                     // Text column
