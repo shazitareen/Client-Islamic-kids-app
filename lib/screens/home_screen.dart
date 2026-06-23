@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../app_theme.dart';
 import '../data/duas_data.dart';
 import '../widgets/module_card.dart';
-import '../widgets/parental_gate.dart';
 import '../providers/app_provider.dart';
 import 'qaidah_quiz_screen.dart';
 import 'islamic_quiz_screen.dart';
@@ -60,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryGreen),
             onPressed: () {
               Navigator.pop(ctx);
-              ParentalGate.show(context, () {
-                appProvider.purchaseRemoveAds(context);
-              });
+              appProvider.purchaseRemoveAds(context);
             },
             child: const Text('Remove Ads', style: TextStyle(color: Colors.white)),
           ),
@@ -102,9 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: const Icon(Icons.star_rounded, color: Colors.black87, size: 24),
                         tooltip: 'Remove Ads',
                         onPressed: () {
-                          ParentalGate.show(context, () {
-                            context.read<AppProvider>().purchaseRemoveAds(context);
-                          });
+                          context.read<AppProvider>().purchaseRemoveAds(context);
                         },
                       ),
                     ),

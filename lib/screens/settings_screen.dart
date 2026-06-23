@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app_theme.dart';
 import '../providers/app_provider.dart';
-import '../widgets/parental_gate.dart';
 import 'privacy_policy_screen.dart';
 
 /// Settings screen — handles Remove Ads purchase and restore.
@@ -52,11 +51,7 @@ class SettingsScreen extends StatelessWidget {
                               : ElevatedButton(
                                   onPressed: appProvider.isPurchasePending
                                       ? null
-                                      : () {
-                                          ParentalGate.show(context, () {
-                                            appProvider.purchaseRemoveAds(context);
-                                          });
-                                        },
+                                      : () => appProvider.purchaseRemoveAds(context),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppTheme.accentGold,
                                     foregroundColor: Colors.black,
@@ -80,11 +75,7 @@ class SettingsScreen extends StatelessWidget {
                           title: const Text('Restore Purchase'),
                           subtitle:
                               const Text('Already bought? Tap to restore.'),
-                          onTap: () {
-                            ParentalGate.show(context, () {
-                              appProvider.restorePurchases(context);
-                            });
-                          },
+                          onTap: () => appProvider.restorePurchases(context),
                         ),
                       ],
                     ),

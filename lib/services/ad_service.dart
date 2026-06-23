@@ -14,24 +14,14 @@ class AdService {
   bool _isAdMobLoaded = false;
   bool _adsDisabled = false;
 
-  // true = child-safe config (TFCD on); false = standard adult config
-  bool _isChildUser = true;
-
-  Future<void> initialize({bool isChildUser = true}) async {
-    _isChildUser = isChildUser;
+  Future<void> initialize() async {
     final RequestConfiguration config = RequestConfiguration(
-      tagForChildDirectedTreatment: isChildUser
-          ? TagForChildDirectedTreatment.yes
-          : TagForChildDirectedTreatment.no,
-      tagForUnderAgeOfConsent: isChildUser
-          ? TagForUnderAgeOfConsent.yes
-          : TagForUnderAgeOfConsent.no,
-      maxAdContentRating:
-          isChildUser ? MaxAdContentRating.g : MaxAdContentRating.t,
+      tagForChildDirectedTreatment: TagForChildDirectedTreatment.no,
+      tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.no,
+      maxAdContentRating: MaxAdContentRating.t,
     );
     await MobileAds.instance.updateRequestConfiguration(config);
-    debugPrint(
-        'AdMob configured: isChild=$isChildUser TFCD=${isChildUser ? "yes" : "no"}');
+    debugPrint('AdMob configured: general audience');
   }
 
   void disableAds() {
@@ -46,10 +36,7 @@ class AdService {
     try {
       await InterstitialAd.load(
         adUnitId: _adMobInterstitialId,
-        request: AdRequest(
-          // Pass child-directed extras when in child mode
-          extras: _isChildUser ? {'npa': '1'} : null,
-        ),
+        request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (ad) {
             _adMobInterstitialAd = ad;

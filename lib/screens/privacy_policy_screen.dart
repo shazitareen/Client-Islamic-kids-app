@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import '../app_theme.dart';
 
-/// Screen displaying the Privacy Policy for deen4kids.
+/// Screen displaying the Privacy Policy for Deen4Family.
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
 
@@ -43,7 +43,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'At deen4kids, we are committed to providing a safe, clean, and private environment for children to learn about Islam.',
+                          'At Deen4Family, we are committed to providing a safe, clean, and private environment for the whole family to learn about Islam.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
@@ -57,52 +57,54 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // 1. Data Collection Section
                 _buildPolicyCard(
                   title: '1. No Personal Data Collected ❌',
                   content:
-                      'We do NOT collect, request, or store any personal information from children or parents. You do not need to register, log in, or enter details such as name, email, address, or phone number to use this app.',
+                      'We do NOT collect, request, or store any personal information. You do not need to register, log in, or enter any details such as name, email, address, or phone number to use this app.',
                 ),
                 const SizedBox(height: 12),
 
-                // 2. Local Storage Section
                 _buildPolicyCard(
-                  title: '2. 100% Offline Storage 💾',
+                  title: '2. Local Storage Only 💾',
                   content:
-                      'All your progress (quiz scores, completed daily tasks, and sound settings) is saved locally on your own device using SharedPreferences. This information is never sent to any external server and never shared with anyone.',
+                      'All your progress (quiz scores, completed daily tasks, and settings) is saved locally on your own device. This information is never sent to any external server and never shared with anyone.',
                 ),
                 const SizedBox(height: 12),
 
-                // 3. Child-Safe Advertisements Section
                 _buildPolicyCard(
-                  title: '3. Child-Safe Advertising (COPPA) 👶',
+                  title: '3. Advertisements 📢',
                   content:
-                      'We show occasional advertisements to help fund the app. To make this safe for children:\n'
-                      '• We strictly flag all ad requests for "Child-Directed Treatment" (COPPA/GDPR-K compliant).\n'
-                      '• We limit ad content to a maximum rating of General Audience ("G").\n'
-                      '• Personalised tracking, behavioral advertising, and profiling are fully disabled.',
+                      'We show occasional interstitial advertisements to help fund the app. Ads are served by Google AdMob for a general audience. You can permanently remove all ads with a one-time in-app purchase available in Settings.',
                 ),
                 const SizedBox(height: 12),
 
-                // 4. External Links & Purchases Section
                 _buildPolicyCard(
-                  title: '4. Parental Gate Protection 🔒',
+                  title: '4. In-App Purchases 💳',
                   content:
-                      'Any action that could lead to financial transaction (like the one-time "Remove All Ads" purchase) or restoration of purchases is fully protected by a Parental Gate math challenge. This ensures that children cannot accidentally trigger purchases or exit the app flow.',
+                      'The only available purchase is a one-time "Remove All Ads" option. All transactions are processed securely through Google Play Billing. We do not handle or store any payment information.',
                 ),
                 const SizedBox(height: 12),
 
-                // 5. Contact Section
                 _buildPolicyCard(
-                  title: '5. Questions or Support? 📧',
+                  title: '5. Third-Party Services 🔗',
                   content:
-                      'If you have any questions or feedback about our app or privacy practices, parents are welcome to contact the developer (Cilatrix) at:\n'
-                      '• Email: cilatrix@gmail.com\n\n'
-                      'Thank you for trusting deen4kids to be a part of your child\'s Islamic learning journey!',
+                      'This app uses the following third-party services:\n'
+                      '• Google AdMob — for displaying ads\n'
+                      '• Google Play Billing — for in-app purchases\n'
+                      '• Quran API (alquran.cloud) — to fetch Quran text\n\n'
+                      'These services have their own privacy policies. We do not control the data practices of these providers.',
+                ),
+                const SizedBox(height: 12),
+
+                _buildPolicyCard(
+                  title: '6. Questions or Support? 📧',
+                  content:
+                      'If you have any questions or feedback about our app or privacy practices, please contact us at:\n'
+                      '• Email: shazikhantareen@gmail.com\n\n'
+                      'Thank you for trusting Deen4Family as part of your Islamic learning journey!',
                 ),
                 const SizedBox(height: 20),
 
-                // Footer Text
                 Center(
                   child: Text(
                     'Last Updated: June 2026',

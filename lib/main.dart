@@ -14,7 +14,6 @@ import 'services/notification_service.dart';
 import 'services/purchase_service.dart';
 import 'services/storage_service.dart';
 import 'screens/home_screen.dart';
-import 'screens/age_gate_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,11 +27,8 @@ Future<void> main() async {
 
   final storageService = await StorageService.create();
 
-  // Determine user type before initialising ads so config is correct from the start
-  final isChildUser = storageService.isChildUser();
-
   final adService = AdService();
-  await adService.initialize(isChildUser: isChildUser);
+  await adService.initialize();
 
   final purchaseService = PurchaseService(storageService);
   final notificationService = NotificationService();
@@ -44,9 +40,6 @@ Future<void> main() async {
     storageService: storageService,
   );
   appProvider.initialize();
-
-  // Show age gate on very first launch; route directly to home otherwise
-  final showAgeGate = !storageService.hasSeenAgeGate();
 
   runApp(
     MultiProvider(
@@ -62,23 +55,13 @@ Future<void> main() async {
           create: (_) => TasksProvider(storageService),
         ),
       ],
-      child: Deen4FamilyApp(
-        showAgeGate: showAgeGate,
-        storageService: storageService,
-      ),
+      child: const Deen4FamilyApp(),
     ),
   );
 }
 
 class Deen4FamilyApp extends StatelessWidget {
-  final bool showAgeGate;
-  final StorageService storageService;
-
-  const Deen4FamilyApp({
-    super.key,
-    required this.showAgeGate,
-    required this.storageService,
-  });
+  const Deen4FamilyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -86,9 +69,7 @@ class Deen4FamilyApp extends StatelessWidget {
       title: 'Deen4Family',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
-      home: showAgeGate
-          ? AgeGateScreen(storageService: storageService)
-          : const HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
